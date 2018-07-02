@@ -1,5 +1,5 @@
 import XCTest
-@testable import RNGExtension
+import RNGExtension
 
 struct DummyRNG: RandomNumberGenerator {
     static var `default` = DummyRNG.init()
