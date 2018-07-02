@@ -24,7 +24,6 @@ final class RNGExtensionTests: XCTestCase {
         print(rng.uniform.next() as Float)
         
         var uniform = rng.uniform
-        
         print(uniform.next() as Float)
         print(uniform.next() as Float)
         print(uniform.next() as Float)
