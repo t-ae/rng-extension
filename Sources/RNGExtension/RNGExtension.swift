@@ -48,7 +48,10 @@ public struct Normal<Base: RandomNumberGenerator> {
     }
     
     /// Returns a value from N(mu, sigma^2) distribution.
+    /// - Precondition:
+    ///   - `sigma` >= 0
     public mutating func next(mu: Float, sigma: Float) -> Float {
+        precondition(sigma >= 0, "Invalid argument: `sigma` must not be less than 0.")
         let x: Float = sqrt(-2*log1p(-base.next12()+1))
         let y: Float = sin(2 * .pi * base.next12())
         return sigma * x * y + mu
@@ -60,7 +63,10 @@ public struct Normal<Base: RandomNumberGenerator> {
     }
     
     /// Returns a value from N(mu, sigma^2) distribution.
+    /// - Precondition:
+    ///   - `sigma` >= 0
     public mutating func next(mu: Double, sigma: Double) -> Double {
+        precondition(sigma >= 0, "Invalid argument: `sigma` must not be less than 0.")
         let x: Double = sqrt(-2*log1p(-base.next12()+1))
         let y: Double = sin(2 * .pi * base.next12())
         return sigma * x * y + mu
