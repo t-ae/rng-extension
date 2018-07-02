@@ -1,7 +1,7 @@
 import Foundation
 
 public struct Uniform<Base: RandomNumberGenerator> {
-    var base: Base
+    public var base: Base
     
     init(base: Base) {
         self.base = base
@@ -33,7 +33,8 @@ public struct Uniform<Base: RandomNumberGenerator> {
 }
 
 public struct Normal<Base: RandomNumberGenerator> {
-    var base: Uniform<Base>
+    public var base: Uniform<Base>
+    
     init(base: Uniform<Base>) {
         self.base = base
     }
