@@ -1,9 +1,9 @@
 import Foundation
 
-public struct Uniform {
-    var base: RandomNumberGenerator
+public struct Uniform<Base: RandomNumberGenerator> {
+    var base: Base
     
-    init(base: RandomNumberGenerator) {
+    init(base: Base) {
         self.base = base
     }
     
@@ -32,9 +32,9 @@ public struct Uniform {
     }
 }
 
-public struct Normal {
-    var base: Uniform
-    init(base: Uniform) {
+public struct Normal<Base: RandomNumberGenerator> {
+    var base: Uniform<Base>
+    init(base: Uniform<Base>) {
         self.base = base
     }
     
@@ -60,16 +60,16 @@ public struct Normal {
 }
 
 extension RandomNumberGenerator {
-    public var uniform: Uniform {
+    public var uniform: Uniform<Self> {
         get {
             return Uniform(base: self)
         }
         set {
-            self = newValue.base as! Self
+            self = newValue.base
         }
     }
     
-    public var normal: Normal {
+    public var normal: Normal<Self> {
         get {
             return Normal(base: uniform)
         }
