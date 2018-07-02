@@ -15,6 +15,15 @@ public struct Uniform<Base: RandomNumberGenerator> {
         T.RawSignificand.Magnitude : UnsignedInteger {
             return T.random(in: range, using: &base)
     }
+    
+    /// Returns a value from uniform distribution.
+    /// - Parameter range: Range of uniform distribution, default: 0...1
+    public mutating func next<T: BinaryFloatingPoint>(_ range: ClosedRange<T> = 0...1) -> T
+        where T.RawSignificand : FixedWidthInteger,
+        T.RawSignificand.Stride : SignedInteger,
+        T.RawSignificand.Magnitude : UnsignedInteger {
+            return T.random(in: range, using: &base)
+    }
 }
 
 public struct Normal<Base: RandomNumberGenerator> {
