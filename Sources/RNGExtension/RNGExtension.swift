@@ -1,17 +1,5 @@
 import Foundation
 
-extension RandomNumberGenerator {
-    mutating func next12() -> Float {
-        let uint32 = next() as UInt32
-        return Float(bitPattern: uint32 >> 9 | 0x3f80_0000)
-    }
-    
-    mutating  func next12() -> Double {
-        let uint64 = next() as UInt64
-        return Double(bitPattern: uint64 >> 12 | 0x3ff0_0000_0000_0000)
-    }
-}
-
 public struct Uniform<Base: RandomNumberGenerator> {
     public var base: Base
     
@@ -21,14 +9,11 @@ public struct Uniform<Base: RandomNumberGenerator> {
     
     /// Returns a value from uniform distribution.
     /// - Parameter range: Range of uniform distribution, default: 0..<1
-    public mutating func next(_ range: Range<Float> = 0..<1) -> Float {
-        return (range.upperBound - range.lowerBound) * (base.next12() - 1) + range.lowerBound
-    }
-    
-    /// Returns a value from uniform distribution.
-    /// - Parameter range: Range of uniform distribution, default: 0..<1
-    public mutating func next(_ range: Range<Double> = 0..<1) -> Double {
-        return (range.upperBound - range.lowerBound) * (base.next12() - 1) + range.lowerBound
+    public mutating func next<T: BinaryFloatingPoint>(_ range: Range<T> = 0..<1) -> T
+        where T.RawSignificand : FixedWidthInteger,
+        T.RawSignificand.Stride : SignedInteger,
+        T.RawSignificand.Magnitude : UnsignedInteger {
+            return T.random(in: range, using: &base)
     }
 }
 
@@ -44,8 +29,8 @@ public struct Normal<Base: RandomNumberGenerator> {
     ///   - `sigma` >= 0
     public mutating func next(mu: Float, sigma: Float) -> Float {
         precondition(sigma >= 0, "Invalid argument: `sigma` must not be less than 0.")
-        let x: Float = sqrt(-2*log1p(-base.next12()+1))
-        let y: Float = sin(2 * .pi * base.next12())
+        let x = sqrt(-2*log(Float.random(in: .leastNormalMagnitude..<1, using: &base)))
+        let y = sin(Float.random(in: .leastNormalMagnitude..<2*Float.pi, using: &base))
         return sigma * x * y + mu
     }
     
@@ -59,8 +44,8 @@ public struct Normal<Base: RandomNumberGenerator> {
     ///   - `sigma` >= 0
     public mutating func next(mu: Double, sigma: Double) -> Double {
         precondition(sigma >= 0, "Invalid argument: `sigma` must not be less than 0.")
-        let x: Double = sqrt(-2*log1p(-base.next12()+1))
-        let y: Double = sin(2 * .pi * base.next12())
+        let x = sqrt(-2*log(Double.random(in: .leastNormalMagnitude..<1, using: &base)))
+        let y = sin(Double.random(in: .leastNormalMagnitude..<2*Double.pi, using: &base))
         return sigma * x * y + mu
     }
     
