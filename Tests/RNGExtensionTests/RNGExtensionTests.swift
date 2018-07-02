@@ -32,7 +32,7 @@ final class RNGExtensionTests: XCTestCase {
     
     func testUniform() {
         do {
-            let count = 100000
+            let count = 1000000
             let array = (0..<count).map { _ in Random.default.uniform.next() as Float }
             let mean = array.reduce(0, +) / Float(count)
             
@@ -41,7 +41,7 @@ final class RNGExtensionTests: XCTestCase {
             XCTAssertEqual(mean, 0.5, accuracy: 1e-2)
         }
         do {
-            let count = 100000
+            let count = 1000000
             let array = (0..<count).map { _ in Random.default.uniform.next(low: -10, high: 20) as Double }
             let mean = array.reduce(0, +) / Double(count)
             
@@ -53,7 +53,7 @@ final class RNGExtensionTests: XCTestCase {
     
     func testNormal() {
         do {
-            let count = 100000
+            let count = 1000000
             let array = (0..<count).map { _ in Random.default.normal.next() as Float }
             let mean = array.reduce(0, +) / Float(count)
             let std = sqrt(array.map { pow($0 - mean, 2) }.reduce(0, +) / Float(count))

@@ -1,5 +1,17 @@
 import Foundation
 
+extension RandomNumberGenerator {
+    mutating func next12() -> Float {
+        let uint32 = next() as UInt32
+        return Float(bitPattern: uint32 >> 9 | 0x3f80_0000)
+    }
+    
+    mutating  func next12() -> Double {
+        let uint64 = next() as UInt64
+        return Double(bitPattern: uint64 >> 12 | 0x3ff0_0000_0000_0000)
+    }
+}
+
 public struct Uniform<Base: RandomNumberGenerator> {
     public var base: Base
     
@@ -9,9 +21,7 @@ public struct Uniform<Base: RandomNumberGenerator> {
     
     /// Returns a value from uniform [low, high) distribution.
     public mutating func next(low: Float, high: Float) -> Float {
-        let uint32: UInt32 = base.next()
-        
-        return (high - low) * (Float(bitPattern: uint32 >> 9 | 0x3f80_0000) - 1) + low
+        return (high - low) * (base.next12() - 1) + low
     }
     
     /// Returns a value from uniform [0, 1) distribution.
@@ -21,9 +31,7 @@ public struct Uniform<Base: RandomNumberGenerator> {
     
     /// Returns a value from uniform [low, high) distribution.
     public mutating func next(low: Double, high: Double) -> Double {
-        let uint64: UInt64 = base.next()
-        
-        return (high - low) * (Double(bitPattern: uint64 >> 12 | 0x3ff0_0000_0000_0000) - 1) + low
+        return (high - low) * (base.next12() - 1) + low
     }
     
     /// Returns a value from uniform [0, 1) distribution.
@@ -33,15 +41,17 @@ public struct Uniform<Base: RandomNumberGenerator> {
 }
 
 public struct Normal<Base: RandomNumberGenerator> {
-    public var base: Uniform<Base>
+    public var base: Base
     
-    init(base: Uniform<Base>) {
+    init(base: Base) {
         self.base = base
     }
     
     /// Returns a value from N(mu, sigma^2) distribution.
     public mutating func next(mu: Float, sigma: Float) -> Float {
-        return sigma * sqrt(-2*log(base.next(low: Float.leastNormalMagnitude, high: 1))) * sin(base.next(low: 0, high: 2*Float.pi)) + mu
+        let x: Float = sqrt(-2*log1p(-base.next12()+1))
+        let y: Float = sin(2 * .pi * base.next12())
+        return sigma * x * y + mu
     }
     
     /// Returns a value from N(0, 1) distribution.
@@ -51,7 +61,9 @@ public struct Normal<Base: RandomNumberGenerator> {
     
     /// Returns a value from N(mu, sigma^2) distribution.
     public mutating func next(mu: Double, sigma: Double) -> Double {
-        return sigma * sqrt(-2*log(base.next(low: Double.leastNormalMagnitude, high: 1))) * sin(base.next(low: 0, high: 2*Double.pi)) + mu
+        let x: Double = sqrt(-2*log1p(-base.next12()+1))
+        let y: Double = sin(2 * .pi * base.next12())
+        return sigma * x * y + mu
     }
     
     /// Returns a value from N(0, 1) distribution.
@@ -72,10 +84,10 @@ extension RandomNumberGenerator {
     
     public var normal: Normal<Self> {
         get {
-            return Normal(base: uniform)
+            return Normal(base: self)
         }
         set {
-            self.uniform = newValue.base
+            self = newValue.base
         }
     }
 }
