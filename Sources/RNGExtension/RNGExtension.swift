@@ -40,7 +40,7 @@ public struct Normal {
     
     /// Returns a value from N(mu, sigma^2) distribution.
     public mutating func next(mu: Float, sigma: Float) -> Float {
-        return sqrt(-2*log(base.next(low: Float.leastNormalMagnitude, high: 1))) * sin(base.next(low: 0, high: 2*Float.pi))
+        return sigma * sqrt(-2*log(base.next(low: Float.leastNormalMagnitude, high: 1))) * sin(base.next(low: 0, high: 2*Float.pi)) + mu
     }
     
     /// Returns a value from N(0, 1) distribution.
@@ -50,7 +50,7 @@ public struct Normal {
     
     /// Returns a value from N(mu, sigma^2) distribution.
     public mutating func next(mu: Double, sigma: Double) -> Double {
-        return sqrt(-2*log(base.next(low: Double.leastNormalMagnitude, high: 1))) * sin(base.next(low: 0, high: 2*Double.pi))
+        return sigma * sqrt(-2*log(base.next(low: Double.leastNormalMagnitude, high: 1))) * sin(base.next(low: 0, high: 2*Double.pi)) + mu
     }
     
     /// Returns a value from N(0, 1) distribution.
