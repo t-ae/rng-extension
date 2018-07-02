@@ -28,6 +28,13 @@ final class RNGExtensionTests: XCTestCase {
         print(uniform.next() as Float)
         print(uniform.next() as Float)
         print(uniform.next() as Float)
+        
+        // This generates same sequence as above...
+        var uniform2 = rng.uniform
+        
+        print(uniform2.next() as Float)
+        print(uniform2.next() as Float)
+        print(uniform2.next() as Float)
     }
     
     func testUniform() {
@@ -42,7 +49,7 @@ final class RNGExtensionTests: XCTestCase {
         }
         do {
             let count = 1000000
-            let array = (0..<count).map { _ in Random.default.uniform.next(low: -10, high: 20) as Double }
+            let array = (0..<count).map { _ in Random.default.uniform.next(-10..<20) as Double }
             let mean = array.reduce(0, +) / Double(count)
             
             XCTAssertGreaterThanOrEqual(array.min()!, -10)

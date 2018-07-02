@@ -20,23 +20,23 @@ public struct Uniform<Base: RandomNumberGenerator> {
     }
     
     /// Returns a value from uniform [low, high) distribution.
-    public mutating func next(low: Float, high: Float) -> Float {
-        return (high - low) * (base.next12() - 1) + low
+    public mutating func next(_ range: Range<Float>) -> Float {
+        return (range.upperBound - range.lowerBound) * (base.next12() - 1) + range.lowerBound
     }
     
     /// Returns a value from uniform [0, 1) distribution.
     public mutating func next() -> Float {
-        return next(low: 0, high: 1)
+        return next(0..<1)
     }
     
     /// Returns a value from uniform [low, high) distribution.
-    public mutating func next(low: Double, high: Double) -> Double {
-        return (high - low) * (base.next12() - 1) + low
+    public mutating func next(_ range: Range<Double>) -> Double {
+        return (range.upperBound - range.lowerBound) * (base.next12() - 1) + range.lowerBound
     }
     
     /// Returns a value from uniform [0, 1) distribution.
     public mutating func next() -> Double {
-        return next(low: 0, high: 1)
+        return next(0..<1)
     }
 }
 
