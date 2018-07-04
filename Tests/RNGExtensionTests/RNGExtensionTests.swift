@@ -12,34 +12,34 @@ struct DummyRNG: RandomNumberGenerator {
 }
 
 final class RNGExtensionTests: XCTestCase {
-    func testMutating() {
-        print(DummyRNG.default.uniform.next() as Float)
-        print(DummyRNG.default.uniform.next() as Float)
-        print(DummyRNG.default.uniform.next() as Float)
+    func testMutation() {
+        print(DummyRNG.default.uniform.next(in: 0..<1) as Float)
+        print(DummyRNG.default.uniform.next(in: 0..<1) as Float)
+        print(DummyRNG.default.uniform.next(in: 0..<1) as Float)
         
         var rng = DummyRNG.default
         
-        print(rng.uniform.next() as Float)
-        print(rng.uniform.next() as Float)
-        print(rng.uniform.next() as Float)
+        print(rng.uniform.next(in: 0..<1) as Float)
+        print(rng.uniform.next(in: 0..<1) as Float)
+        print(rng.uniform.next(in: 0..<1) as Float)
         
         var uniform = rng.uniform
-        print(uniform.next() as Float)
-        print(uniform.next() as Float)
-        print(uniform.next() as Float)
+        print(uniform.next(in: 0..<1) as Float)
+        print(uniform.next(in: 0..<1) as Float)
+        print(uniform.next(in: 0..<1) as Float)
         
         // This generates same sequence as above...
         var uniform2 = rng.uniform
         
-        print(uniform2.next() as Float)
-        print(uniform2.next() as Float)
-        print(uniform2.next() as Float)
+        print(uniform2.next(in: 0..<1) as Float)
+        print(uniform2.next(in: 0..<1) as Float)
+        print(uniform2.next(in: 0..<1) as Float)
     }
     
     func testUniform() {
         do {
             let count = 1000000
-            let array = (0..<count).map { _ in Random.default.uniform.next() as Float }
+            let array = (0..<count).map { _ in Random.default.uniform.next(in: 0..<1) as Float }
             let mean = array.reduce(0, +) / Float(count)
             
             XCTAssertGreaterThanOrEqual(array.min()!, 0)
@@ -48,7 +48,7 @@ final class RNGExtensionTests: XCTestCase {
         }
         do {
             let count = 1000000
-            let array = (0..<count).map { _ in Random.default.uniform.next(-10..<20) as Double }
+            let array = (0..<count).map { _ in Random.default.uniform.next(in: -10..<20) as Double }
             let mean = array.reduce(0, +) / Double(count)
             
             XCTAssertGreaterThanOrEqual(array.min()!, -10)
@@ -60,7 +60,7 @@ final class RNGExtensionTests: XCTestCase {
     func testNormal() {
         do {
             let count = 1000000
-            let array = (0..<count).map { _ in Random.default.normal.next() as Float }
+            let array = (0..<count).map { _ in Random.default.normal.next(mu: 0, sigma: 1) as Float }
             let mean = array.reduce(0, +) / Float(count)
             let std = sqrt(array.map { pow($0 - mean, 2) }.reduce(0, +) / Float(count))
             
@@ -77,4 +77,10 @@ final class RNGExtensionTests: XCTestCase {
             XCTAssertEqual(std, 3, accuracy: 1e-2)
         }
     }
+    
+    var allTests = [
+        ("testMutation", testMutation),
+        ("testUniform", testUniform),
+        ("testNormal", testNormal)
+    ]
 }

@@ -8,8 +8,8 @@ public struct Uniform<Base: RandomNumberGenerator> {
     }
     
     /// Returns a value from uniform distribution.
-    /// - Parameter range: Range of uniform distribution, default: 0..<1
-    public mutating func next<T: BinaryFloatingPoint>(_ range: Range<T> = 0..<1) -> T
+    /// - Parameter range: Range of uniform distribution.
+    public mutating func next<T: BinaryFloatingPoint>(in range: Range<T>) -> T
         where T.RawSignificand : FixedWidthInteger,
         T.RawSignificand.Stride : SignedInteger,
         T.RawSignificand.Magnitude : UnsignedInteger {
@@ -18,7 +18,7 @@ public struct Uniform<Base: RandomNumberGenerator> {
     
     /// Returns a value from uniform distribution.
     /// - Parameter range: Range of uniform distribution
-    public mutating func next<T: BinaryFloatingPoint>(_ range: ClosedRange<T>) -> T
+    public mutating func next<T: BinaryFloatingPoint>(in range: ClosedRange<T>) -> T
         where T.RawSignificand : FixedWidthInteger,
         T.RawSignificand.Stride : SignedInteger,
         T.RawSignificand.Magnitude : UnsignedInteger {
@@ -53,21 +53,11 @@ public struct Normal<Base: RandomNumberGenerator> {
         return next_generic(mu: mu, sigma: sigma)
     }
     
-    /// Returns a value from N(0, 1) distribution.
-    public mutating func next() -> Float {
-        return next(mu: 0, sigma: 1)
-    }
-    
     /// Returns a value from N(mu, sigma^2) distribution.
     /// - Precondition:
     ///   - `sigma` >= 0
     public mutating func next(mu: Double, sigma: Double) -> Double {
         return next_generic(mu: mu, sigma: sigma)
-    }
-    
-    /// Returns a value from N(0, 1) distribution.
-    public mutating func next() -> Double {
-        return next(mu: 0, sigma: 1)
     }
     
     /// Returns a value from N(mu, sigma^2) distribution.
@@ -77,21 +67,11 @@ public struct Normal<Base: RandomNumberGenerator> {
         return next_generic(mu: mu, sigma: sigma)
     }
     
-    /// Returns a value from N(0, 1) distribution.
-    public mutating func next() -> CGFloat {
-        return next(mu: 0, sigma: 1)
-    }
-    
     /// Returns a value from N(mu, sigma^2) distribution.
     /// - Precondition:
     ///   - `sigma` >= 0
     public mutating func next(mu: Float80, sigma: Float80) -> Float80 {
         return next_generic(mu: mu, sigma: sigma)
-    }
-    
-    /// Returns a value from N(0, 1) distribution.
-    public mutating func next() -> Float80 {
-        return next(mu: 0, sigma: 1)
     }
 }
 
