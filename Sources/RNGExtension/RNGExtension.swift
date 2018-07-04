@@ -26,6 +26,7 @@ public struct Uniform<Base: RandomNumberGenerator> {
     }
 }
 
+
 public struct Normal<Base: RandomNumberGenerator> {
     public var base: Base
     
@@ -33,14 +34,23 @@ public struct Normal<Base: RandomNumberGenerator> {
         self.base = base
     }
     
+    mutating func next_generic<T: SinLog>(mu: T, sigma: T) -> T
+        where T.RawSignificand : FixedWidthInteger,
+        T.RawSignificand.Stride : SignedInteger,
+        T.RawSignificand.Magnitude : UnsignedInteger {
+            precondition(sigma >= 0, "Invalid argument: `sigma` must not be less than 0.")
+            
+            // Box-Muller's method
+            let x: T = sqrt(-2*T.log(.random(in: .leastNormalMagnitude..<1, using: &base)))
+            let y: T = T.sin(.random(in: .leastNormalMagnitude..<2 * .pi, using: &base))
+            return sigma * x * y + mu
+    }
+    
     /// Returns a value from N(mu, sigma^2) distribution.
     /// - Precondition:
     ///   - `sigma` >= 0
     public mutating func next(mu: Float, sigma: Float) -> Float {
-        precondition(sigma >= 0, "Invalid argument: `sigma` must not be less than 0.")
-        let x: Float = sqrt(-2*log(.random(in: .leastNormalMagnitude..<1, using: &base)))
-        let y: Float = sin(.random(in: .leastNormalMagnitude..<2 * .pi, using: &base))
-        return sigma * x * y + mu
+        return next_generic(mu: mu, sigma: sigma)
     }
     
     /// Returns a value from N(0, 1) distribution.
@@ -52,10 +62,7 @@ public struct Normal<Base: RandomNumberGenerator> {
     /// - Precondition:
     ///   - `sigma` >= 0
     public mutating func next(mu: Double, sigma: Double) -> Double {
-        precondition(sigma >= 0, "Invalid argument: `sigma` must not be less than 0.")
-        let x: Double = sqrt(-2*log(.random(in: .leastNormalMagnitude..<1, using: &base)))
-        let y: Double = sin(.random(in: .leastNormalMagnitude..<2 * .pi, using: &base))
-        return sigma * x * y + mu
+        return next_generic(mu: mu, sigma: sigma)
     }
     
     /// Returns a value from N(0, 1) distribution.
@@ -67,10 +74,7 @@ public struct Normal<Base: RandomNumberGenerator> {
     /// - Precondition:
     ///   - `sigma` >= 0
     public mutating func next(mu: CGFloat, sigma: CGFloat) -> CGFloat {
-        precondition(sigma >= 0, "Invalid argument: `sigma` must not be less than 0.")
-        let x: CGFloat = sqrt(-2*log(.random(in: .leastNormalMagnitude..<1, using: &base)))
-        let y: CGFloat = sin(.random(in: .leastNormalMagnitude..<2 * .pi, using: &base))
-        return sigma * x * y + mu
+        return next_generic(mu: mu, sigma: sigma)
     }
     
     /// Returns a value from N(0, 1) distribution.
@@ -82,10 +86,7 @@ public struct Normal<Base: RandomNumberGenerator> {
     /// - Precondition:
     ///   - `sigma` >= 0
     public mutating func next(mu: Float80, sigma: Float80) -> Float80 {
-        precondition(sigma >= 0, "Invalid argument: `sigma` must not be less than 0.")
-        let x: Float80 = sqrt(-2*log(.random(in: .leastNormalMagnitude..<1, using: &base)))
-        let y: Float80 = sin(.random(in: .leastNormalMagnitude..<2 * .pi, using: &base))
-        return sigma * x * y + mu
+        return next_generic(mu: mu, sigma: sigma)
     }
     
     /// Returns a value from N(0, 1) distribution.
