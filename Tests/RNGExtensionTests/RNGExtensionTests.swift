@@ -78,7 +78,7 @@ final class RNGExtensionTests: XCTestCase {
         }
     }
     
-    var allTests = [
+    static let allTests = [
         ("testMutation", testMutation),
         ("testUniform", testUniform),
         ("testNormal", testNormal)
