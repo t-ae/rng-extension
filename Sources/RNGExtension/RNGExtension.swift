@@ -41,8 +41,8 @@ public struct Normal<Base: RandomNumberGenerator> {
             precondition(sigma >= 0, "Invalid argument: `sigma` must not be less than 0.")
             
             // Box-Muller's method
-            let x: T = sqrt(-2 * .log(.random(in: .leastNormalMagnitude..<1, using: &base)))
-            let y: T = .sin(.random(in: .leastNormalMagnitude..<2 * .pi, using: &base))
+            let x: T = sqrt(-2 * .log(.random(in: .leastNonzeroMagnitude..<1, using: &base)))
+            let y: T = .sin(.random(in: .leastNonzeroMagnitude..<2 * .pi, using: &base))
             return sigma * x * y + mu
     }
     
