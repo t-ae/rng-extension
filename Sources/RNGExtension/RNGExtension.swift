@@ -42,7 +42,7 @@ public struct Normal<Base: RandomNumberGenerator> {
             var r: T = 0
             
             repeat {
-                r = .random(in: 0..<high)
+                r = .random(in: 0..<high, using: &base)
             } while r == 0
             
             return r

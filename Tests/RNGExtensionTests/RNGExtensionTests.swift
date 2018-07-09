@@ -46,6 +46,14 @@ final class RNGExtensionTests: XCTestCase {
         print(uniform2.next(in: 0..<1) as Float)
     }
     
+    func testCoW() {
+        var rng1 = DummyRNG()
+        var rng2 = rng1
+        
+        XCTAssertEqual(rng1.uniform.next(in: 0..<1), rng2.uniform.next(in: 0..<1) as Float)
+        XCTAssertEqual(rng1.normal.next(mu: 0, sigma: 1), rng2.normal.next(mu: 0, sigma: 1) as Float)
+    }
+    
     func testUniform() {
         do {
             let count = 1000000
