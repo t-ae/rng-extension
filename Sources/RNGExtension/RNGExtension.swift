@@ -34,6 +34,20 @@ public struct Normal<Base: RandomNumberGenerator> {
         self.base = base
     }
     
+    /// Sample from (0, high)
+    mutating func sample<T: SinLog>(high: T) -> T
+        where T.RawSignificand : FixedWidthInteger,
+        T.RawSignificand.Stride : SignedInteger,
+        T.RawSignificand.Magnitude : UnsignedInteger {
+            var r: T = 0
+            
+            repeat {
+                r = .random(in: 0..<high)
+            } while r == 0
+            
+            return r
+    }
+    
     mutating func next_generic<T: SinLog>(mu: T, sigma: T) -> T
         where T.RawSignificand : FixedWidthInteger,
         T.RawSignificand.Stride : SignedInteger,
@@ -41,9 +55,10 @@ public struct Normal<Base: RandomNumberGenerator> {
             precondition(sigma >= 0, "Invalid argument: `sigma` must not be less than 0.")
             
             // Box-Muller's method
-            let x: T = sqrt(-2 * .log(.random(in: .leastNonzeroMagnitude..<1, using: &base)))
-            let y: T = .sin(.random(in: .leastNonzeroMagnitude..<2 * .pi, using: &base))
-            return sigma * x * y + mu
+            let x: T = sample(high: 1)
+            let y: T = sample(high: .pi*2)
+            
+            return sigma * sqrt(-2*T.log(x)) * T.sin(y) + mu
     }
     
     /// Returns a value from N(mu, sigma^2) distribution.
